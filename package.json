@@ -1,0 +1,10 @@
+{
+  "name": "dad-workout",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "PWA с программой тренировок",
+  "scripts": {
+    "test": "node --test"
+  }
+}
