@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "disclaimer": "Программа составлена как черновик. Перед началом покажите её врачу или специалисту по ЛФК из-за протрузий в спине. При боли в спине, онемении или слабости в ногах прекратите тренировку.",
+  "roadmap": [
+    { "id": "phase1", "months": "1-6", "title": "Адаптация и основа", "focus": "Техника, корпус, подвижность, затем рост объёма. Грудь: отжимания и жимы гантелей лёжа на полу." },
+    { "id": "phase2", "months": "7-12", "title": "Объём", "focus": "Больше подходов, акцент на грудь, подтягивания с весом." },
+    { "id": "phase3", "months": "13-18", "title": "Сила", "focus": "Тяжелее и меньше повторов в безопасном диапазоне." },
+    { "id": "phase4", "months": "19-24", "title": "Мышечная масса", "focus": "Разделение верх/низ, больше упражнений на грудь и спину." },
+    { "id": "phase5", "months": "25-30", "title": "Выносливость и сила", "focus": "Круговые блоки, упражнения на время, плотность тренировки." },
+    { "id": "phase6", "months": "31-36", "title": "Закрепление", "focus": "Лучшие блоки, новые цели." }
+  ],
+  "templates": {
+    "A": {
+      "title": "Грудь и спина",
+      "warmup": [
+        { "ex": "cat_cow", "reps": 10 },
+        { "ex": "thoracic_rotation", "reps": 8 },
+        { "ex": "arm_circles", "reps": 12 },
+        { "ex": "bird_dog", "reps": 6 }
+      ],
+      "main": [
+        { "ex": "floor_press", "sets": 3, "repRange": [8, 12], "restSec": 90 },
+        { "ex": "pushup", "sets": 3, "repRange": [8, 12], "restSec": 90 },
+        { "ex": "pullup", "sets": 3, "repRange": [6, 10], "restSec": 120 },
+        { "ex": "one_arm_row", "sets": 3, "repRange": [8, 12], "restSec": 90 }
+      ],
+      "cooldown": [
+        { "ex": "chest_stretch", "seconds": 30 },
+        { "ex": "dead_hang", "seconds": 20 }
+      ]
+    },
+    "B": {
+      "title": "Ноги и корпус",
+      "warmup": [
+        { "ex": "cat_cow", "reps": 10 },
+        { "ex": "bird_dog", "reps": 6 },
+        { "ex": "bodyweight_squat", "reps": 10 }
+      ],
+      "main": [
+        { "ex": "goblet_squat", "sets": 3, "repRange": [10, 15], "restSec": 90 },
+        { "ex": "glute_bridge", "sets": 3, "repRange": [12, 20], "restSec": 60 },
+        { "ex": "reverse_lunge", "sets": 2, "repRange": [8, 12], "restSec": 90 },
+        { "ex": "plank", "sets": 3, "timeRange": { "start": 30, "step": 5, "max": 60 }, "restSec": 60 },
+        { "ex": "side_plank", "sets": 2, "timeRange": { "start": 20, "step": 5, "max": 45 }, "restSec": 45 }
+      ],
+      "cooldown": [
+        { "ex": "hamstring_stretch", "seconds": 30 },
+        { "ex": "hip_flexor_stretch", "seconds": 30 }
+      ]
+    },
+    "C": {
+      "title": "Грудь, плечи и руки",
+      "warmup": [
+        { "ex": "cat_cow", "reps": 10 },
+        { "ex": "thoracic_rotation", "reps": 8 },
+        { "ex": "arm_circles", "reps": 12 }
+      ],
+      "main": [
+        { "ex": "floor_press", "sets": 3, "repRange": [8, 12], "restSec": 90 },
+        { "ex": "floor_fly", "sets": 3, "repRange": [10, 15], "restSec": 75 },
+        { "ex": "pushup", "sets": 3, "repRange": [8, 12], "restSec": 90 },
+        { "ex": "lateral_raise", "sets": 2, "repRange": [10, 15], "restSec": 60 },
+        { "ex": "triceps_floor_extension", "sets": 2, "repRange": [10, 15], "restSec": 60 },
+        { "ex": "biceps_curl", "sets": 2, "repRange": [10, 15], "restSec": 60 }
+      ],
+      "cooldown": [
+        { "ex": "chest_stretch", "seconds": 30 },
+        { "ex": "dead_hang", "seconds": 20 }
+      ]
+    }
+  },
+  "phases": [
+    {
+      "id": "phase1",
+      "title": "Адаптация и основа",
+      "blocks": [
+        {
+          "id": "p1b1",
+          "title": "Знакомство с техникой",
+          "focus": "Осваиваем технику и подбираем веса. Подходов на одно меньше, чем потом.",
+          "weeks": 2,
+          "perWeek": 2,
+          "setsDelta": -1,
+          "rotation": ["A", "B"]
+        },
+        {
+          "id": "p1b2",
+          "title": "Адаптация",
+          "focus": "Переходим на 3 тренировки в неделю. Последняя неделя облегчённая.",
+          "weeks": 4,
+          "perWeek": 3,
+          "rotation": ["A", "B", "C"],
+          "deloadWeeks": [4]
+        },
+        {
+          "id": "p1b3",
+          "title": "Рост объёма 1",
+          "focus": "Добавляем повторы, затем вес. Последняя неделя облегчённая.",
+          "weeks": 5,
+          "perWeek": 3,
+          "rotation": ["A", "B", "C"],
+          "deloadWeeks": [5]
+        },
+        {
+          "id": "p1b4",
+          "title": "Рост объёма 2",
+          "focus": "Добавляем повторы, затем вес. Последняя неделя облегчённая.",
+          "weeks": 5,
+          "perWeek": 3,
+          "rotation": ["A", "B", "C"],
+          "deloadWeeks": [5]
+        },
+        {
+          "id": "p1b5",
+          "title": "Рост объёма 3",
+          "focus": "Добавляем повторы, затем вес. Последняя неделя облегчённая.",
+          "weeks": 5,
+          "perWeek": 3,
+          "rotation": ["A", "B", "C"],
+          "deloadWeeks": [5]
+        },
+        {
+          "id": "p1b6",
+          "title": "Рост объёма 4",
+          "focus": "Добавляем повторы, затем вес. Последняя неделя облегчённая.",
+          "weeks": 5,
+          "perWeek": 3,
+          "rotation": ["A", "B", "C"],
+          "deloadWeeks": [5]
+        }
+      ]
+    }
+  ]
+}

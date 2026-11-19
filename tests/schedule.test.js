@@ -8,6 +8,7 @@ import {
   shiftFrom,
   skip,
   markDone,
+  completeSession,
   undoLast,
   nextPlanned,
   overdueSessions,
@@ -168,4 +169,31 @@ test('несуществующая тренировка', () => {
   assert.equal(moveOne(state, 99, '2026-12-01').reason, 'not_found');
   assert.equal(shiftFrom(state, 99, '2026-12-01').reason, 'not_found');
   assert.equal(skip(state, 99).reason, 'not_found');
+});
+
+test('выполнение с опозданием: следующая тренировка и все следующие сдвигаются вперёд', () => {
+  const state = make();
+  // тренировку №1 (пн 23.11) сделали только в пятницу 27.11, а №2 стояла на ср 25.11
+  const r = completeSession(state, 1, '2026-11-27');
+  assert.equal(r.ok, true);
+  assert.equal(r.state.sessions[0].status, 'done');
+  assert.equal(r.state.sessions[1].date, '2026-11-28'); // следующий день
+  const delta = diffDays(state.sessions[1].date, r.state.sessions[1].date);
+  assert.equal(r.state.sessions[2].date, addDays(state.sessions[2].date, delta)); // интервалы сохранены
+  assert.equal(r.state.lastChange, null);
+});
+
+test('выполнение вовремя или раньше срока план не сдвигает', () => {
+  const state = make();
+  const r = completeSession(state, 1, '2026-11-23');
+  assert.deepEqual(dates(r.state), dates(state));
+  const early = completeSession(state, 1, '2026-11-20');
+  assert.deepEqual(dates(early.state), dates(state));
+});
+
+test('после долгого перерыва план перекатывается вперёд от дня выполнения', () => {
+  const state = make();
+  const r = completeSession(state, 1, '2026-12-20');
+  assert.equal(r.state.sessions[1].date, '2026-12-21');
+  assert.ok(r.state.sessions.slice(1).every((s, i, arr) => i === 0 || s.date > arr[i - 1].date));
 });

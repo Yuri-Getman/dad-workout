@@ -20,7 +20,11 @@ function normalizeWeekdays(weekdays) {
  * В неделях, где тренировок меньше, чем выбрано дней, используются первые по порядку дни.
  */
 export function createSchedule(programSessions, { startDate, weekdays }) {
-  const days = normalizeWeekdays(weekdays);
+  return { sessions: assignDates(programSessions, startDate, normalizeWeekdays(weekdays)), lastChange: null };
+}
+
+// Каждая тренировка ставится на ближайший разрешённый день начиная с cursor.
+function assignDates(programSessions, startDate, days) {
   const sessions = [];
   let cursor = startDate;
   for (const s of programSessions) {
@@ -29,7 +33,37 @@ export function createSchedule(programSessions, { startDate, weekdays }) {
     sessions.push({ number: s.number, date: cursor, status: 'planned' });
     cursor = addDays(cursor, 1);
   }
-  return { sessions, lastChange: null };
+  return sessions;
+}
+
+/**
+ * Достраивает расписание, если в программу добавили тренировки (например, новые фазы).
+ * Новые тренировки встают после последней существующей, но не раньше fromDate.
+ */
+export function extendSchedule(state, programSessions, { weekdays, fromDate }) {
+  const days = normalizeWeekdays(weekdays);
+  const lastNumber = state.sessions.reduce((m, s) => Math.max(m, s.number), 0);
+  const fresh = programSessions.filter((s) => s.number > lastNumber);
+  if (!fresh.length) return state;
+  const lastDate = state.sessions.reduce((m, s) => (effectiveDate(s) > m ? effectiveDate(s) : m), '');
+  const afterLast = lastDate ? addDays(lastDate, 1) : fromDate;
+  const start = afterLast > fromDate ? afterLast : fromDate;
+  return { sessions: [...state.sessions, ...assignDates(fresh, start, days)], lastChange: null };
+}
+
+/**
+ * Пересчитывает даты всех невыполненных тренировок, например, при смене дней недели.
+ * Выполненные и пропущенные остаются как есть.
+ */
+export function replan(state, programSessions, { weekdays, fromDate }) {
+  const days = normalizeWeekdays(weekdays);
+  const perWeek = new Map(programSessions.map((s) => [s.number, s]));
+  const planned = state.sessions.filter((s) => s.status === 'planned' && perWeek.has(s.number));
+  const fresh = new Map(assignDates(planned.map((s) => perWeek.get(s.number)), fromDate, days).map((s) => [s.number, s.date]));
+  return {
+    sessions: state.sessions.map((s) => (fresh.has(s.number) ? { ...s, date: fresh.get(s.number) } : s)),
+    lastChange: null,
+  };
 }
 
 const effectiveDate = (s) => s.doneDate ?? s.date;
@@ -124,6 +158,21 @@ export function markDone(state, number, doneDate) {
   if (target.status !== 'planned') return { ok: false, reason: 'not_planned' };
   const sessions = state.sessions.map((s) => (s.number === number ? { ...s, status: 'done', doneDate } : s));
   return { ok: true, warnings: [], state: { sessions, lastChange: null } };
+}
+
+/**
+ * Тренировка выполнена. Если следующая запланированная тренировка оказалась на эту дату или раньше
+ * (выполнили с опозданием), она и все следующие сдвигаются так, чтобы следующая была на следующий день.
+ */
+export function completeSession(state, number, doneDate) {
+  const done = markDone(state, number, doneDate);
+  if (!done.ok) return done;
+  const next = done.state.sessions.find((s) => s.status === 'planned' && s.number > number);
+  if (next && next.date <= doneDate) {
+    const shifted = shiftFrom(done.state, next.number, addDays(doneDate, 1));
+    if (shifted.ok) return { ok: true, warnings: [], state: { sessions: shifted.state.sessions, lastChange: null } };
+  }
+  return done;
 }
 
 /** Отменить последний перенос или пропуск. */
