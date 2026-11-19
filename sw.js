@@ -1,7 +1,8 @@
 // Service worker: офлайн-режим.
-// При любом изменении файлов приложения увеличивайте CACHE_VERSION,
-// иначе телефон может продолжать показывать старую версию.
-const CACHE_VERSION = 'v1';
+// CACHE_VERSION при публикации подменяется на номер коммита (см. .github/workflows/pages.yml),
+// поэтому каждая публикация создаёт новый кэш и телефон получает свежую версию.
+// Список PRECACHE должен содержать все файлы приложения: это проверяет tests/sw.test.js.
+const CACHE_VERSION = 'dev';
 const CACHE_NAME = `workout-${CACHE_VERSION}`;
 
 const PRECACHE = [
@@ -9,10 +10,34 @@ const PRECACHE = [
   './index.html',
   './manifest.webmanifest',
   './css/style.css',
-  './js/app.js',
-  './js/version.js',
+  './data/exercises.json',
+  './data/program.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './js/app.js',
+  './js/db.js',
+  './js/logic/backup.js',
+  './js/logic/calibration.js',
+  './js/logic/dates.js',
+  './js/logic/equipment.js',
+  './js/logic/flow.js',
+  './js/logic/format.js',
+  './js/logic/profile.js',
+  './js/logic/program.js',
+  './js/logic/progression.js',
+  './js/logic/schedule.js',
+  './js/logic/stats.js',
+  './js/logic/workout.js',
+  './js/platform.js',
+  './js/store.js',
+  './js/ui/active.js',
+  './js/ui/charts.js',
+  './js/ui/common.js',
+  './js/ui/idle.js',
+  './js/ui/onboarding.js',
+  './js/ui/program.js',
+  './js/ui/progress.js',
+  './js/version.js',
 ];
 
 self.addEventListener('install', (event) => {
